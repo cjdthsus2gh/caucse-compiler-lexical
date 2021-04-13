@@ -7,11 +7,12 @@ public class ParseDFA {
     private JSONObject table;
     private JSONParser parser = new JSONParser();
     private int priority = 0;
-    public void initJSON() {
+    JSONObject kindOfToken, currentState;
+    String inputSymbol = null;
 
+    public void initJSON() {
         FileInput file = new FileInput();
         String dfa = file.parseFile("src\\dfa.txt");
-
         try {
             table = (JSONObject) parser.parse(dfa);
         } catch (ParseException e) {
@@ -19,9 +20,35 @@ public class ParseDFA {
             e.printStackTrace();
         }
     }
-    public String getT(JSONObject Token, String input) {
-        JSONObject temp = (JSONObject)Token.get(input);
-        return temp.toString();
-    }
+    public String getState(String Token,String state,String input) {
+            kindOfToken = (JSONObject)table.get(Token);
+          //  System.out.println(kindOfToken);
+        try {
+            currentState = (JSONObject)kindOfToken.get(state);
+         //   System.out.println(currentState);
+            inputSymbol = currentState.get(input).toString();
+         //   System.out.println(inputSymbol);
 
+        } catch (NullPointerException e) {
+            return null;
+        }
+        return inputSymbol;
+    }
+    public String getToken(int i) {
+        String temp;
+        switch(i) {
+            case 1:
+                temp = "COMPARISON";
+                break;
+            case 2:
+                temp = "IDENTIFIER";
+                break;
+            case 3:
+                temp = "DIGIT";
+                break;
+            default:
+                temp = null;
+        }
+        return temp;
+    }
 }

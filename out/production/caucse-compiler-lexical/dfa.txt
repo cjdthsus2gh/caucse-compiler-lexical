@@ -2,7 +2,7 @@
     "COMPARISON" : {
         "T0" : {"<":"T1", ">":"T2", "!":"T3", "=":"T4", "fin":"false"},
         "T1" : {"=":"T5", "fin":"true"},
-        "T2" : {"=":"T6", "fin":"true"},        
+        "T2" : {"=":"T6", "fin":"true", " " : "NUL"},
         "T3" : {"=":"T7", "fin":"false"},
         "T4" : {"=":"T7", "fin":"false"},
         "T5" : {"fin":"true"},

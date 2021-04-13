@@ -164,5 +164,12 @@
         "T1" : {"Letter":"T1", "_":"T2", "Digit":"T3", "fin":"true"},
         "T2" : {"Letter":"T1", "_":"T2", "Digit":"T3", "fin":"true"},
         "T3" : {"Letter":"T1", "_":"T2", "Digit":"T3", "fin":"true"}
+    },
+    "22" : {
+        "name" : "WHITESPACES",
+        "T0" : {" ":"T1", "\n":"T2", "\t":"T3"},
+        "T1" : {" ":"T1", "\n":"T2", "\t":"T3", "fin":"true"},
+        "T2" : {" ":"T1", "\n":"T2", "\t":"T3", "fin":"true"},
+        "T3" : {" ":"T1", "\n":"T2", "\t":"T3", "fin":"true"}
     }
 }

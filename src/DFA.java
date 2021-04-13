@@ -25,8 +25,8 @@ public class DFA {
         return this.stance;
     }
 
-    public JSONObject getTable() {
-        return this.table;
+    public JSONObject getC_sate() {
+        return c_state;
     }
 
     public void initDFA() {
@@ -34,13 +34,15 @@ public class DFA {
     }
 
     public boolean moveNextState(String ch_input) {
-        try {
-            JSONObject n_state = (JSONObject)this.c_state.get(ch_input);
-            this.c_state = n_state;
-            return true;
-        } catch (Exception e) {
-            this.stance = 2;
-            return false;
+            String n_input = (String)this.c_state.get(ch_input);
+            JSONObject n_state = (JSONObject)this.table.get(n_input);
+            if(n_state == null) {
+                this.stance = 2;
+                return false;
+            }
+            else {
+                this.c_state = n_state;
+                return true;
         }
     }
 

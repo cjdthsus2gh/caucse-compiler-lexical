@@ -1,25 +1,50 @@
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 import java.io.*;
 
 public class DFA {
-    private JSONObject transTable = null;
-    ParseTable pt = new ParseTable();
+    private int stance;
+    private String name;
+    private JSONObject table = null;
+    private JSONObject c_state = null;
 
-    pt.initTable();
-    t_table = pt.getTable();
-
-    public String getNextState(JSONObject currentState, String inputChar) {
-        JSONObject nextState = (JSONObject)currentState.get(inputChar);
-        return ((nextState) ? nextState.toString() : "false");
+    DFA() {
+        this.stance = 1;
     }
 
-    public void dfa(String tok_name, String inputFile) {
-        String result;
-        
-        JSONObject tok_states = (JSONObject)transTable.get(tok_name);
-        JSONObject s_state = (JSONObject)tok_states.get("T0");
-        result = getNextState(s_state, )
+    DFA(JSONObject table) {
+        this.stance = 1;
+        this.table = table;
+        this.name = (String)this.table.get("name");
+    }
+
+    public void setStance(int stance) {
+        this.stance = stance;
+    }
+
+    public int getStance() {
+        return this.stance;
+    }
+
+    public JSONObject getTable() {
+        return this.table;
+    }
+
+    public void initDFA() {
+            this.c_state = (JSONObject)this.table.get("T0");
+    }
+
+    public boolean moveNextState(String ch_input) {
+        try {
+            JSONObject n_state = (JSONObject)this.c_state.get(ch_input);
+            this.c_state = n_state;
+            return true;
+        } catch (Exception e) {
+            this.stance = 2;
+            return false;
+        }
+    }
+
+    public String getName() {
+        return this.name;
     }
 }

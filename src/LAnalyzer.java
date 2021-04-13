@@ -1,26 +1,25 @@
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 import java.io.*;
 
 public class LAnalyzer {
     
     public static void main(String[] args) {
-        
         String inputText;
+        JSONObject tok_table = null;
+        DFA[] dfa = new DFA[22];
+
         FileInput fileParse = new FileInput();
-        JSONParser parser = new JSONParser();
-        JSONObject obj = null;
+        ParseTable pt = new ParseTable();
+
+        inputText = fileParse.parseFile("./input.txt");
         
-        inputText = fileParse.parseFile();
-            System.out.println(obj.get("COMP"));
+        System.out.println(inputText);
 
-            JSONObject obj2 = (JSONObject)obj.get("COMP");
-            System.out.println(obj2.get("T1"));
-
-        
-        System.out.println("끝");
-
+        for (int i = 0; i < 22; i++) {
+            tok_table = pt.splitTable(i);
+            DFA temp = new DFA(tok_table);
+            dfa[i] = temp;
+        }
     }
 }
     

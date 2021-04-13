@@ -6,13 +6,16 @@ import org.json.simple.parser.ParseException;
 public class ParseDFA {
     private JSONObject table;
     private JSONParser parser = new JSONParser();
-    private int priority = 0;
+    private String Letter = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    private String Digit_Exp_Z = "123456789";
+    private String Digit = "0123456789";
+
     JSONObject kindOfToken, currentState;
-    String inputSymbol = null;
+    String afterState = null;
 
     public void initJSON() {
         FileInput file = new FileInput();
-        String dfa = file.parseFile("src\\dfa.txt");
+        String dfa = file.parseFile("src/transTable.json");
         try {
             table = (JSONObject) parser.parse(dfa);
         } catch (ParseException e) {
@@ -20,35 +23,36 @@ public class ParseDFA {
             e.printStackTrace();
         }
     }
-    public String getState(String Token,String state,String input) {
-            kindOfToken = (JSONObject)table.get(Token);
-          //  System.out.println(kindOfToken);
+    public String getState(int Torder,String state,String inputS) {
+
+            kindOfToken = (JSONObject)table.get(Integer.toString(Torder));
         try {
             currentState = (JSONObject)kindOfToken.get(state);
-         //   System.out.println(currentState);
-            inputSymbol = currentState.get(input).toString();
-         //   System.out.println(inputSymbol);
+
+            if(Torder>18 && inputS.length() == 1)//identifier,string,integer,char는 해당 symbol의 범주로 검색할 수 있도록 한다.
+                inputS = this.preDefine(inputS);
+
+            afterState = currentState.get(inputS).toString();
 
         } catch (NullPointerException e) {
             return null;
         }
-        return inputSymbol;
+        return afterState;
     }
-    public String getToken(int i) {
-        String temp;
-        switch(i) {
-            case 1:
-                temp = "COMPARISON";
-                break;
-            case 2:
-                temp = "IDENTIFIER";
-                break;
-            case 3:
-                temp = "DIGIT";
-                break;
-            default:
-                temp = null;
-        }
+    public String getName(int Torder) {        //Torder번째에  해당하는 DFA를 반환한다.
+        kindOfToken = (JSONObject)table.get(Integer.toString(Torder));
+        String temp = (String)kindOfToken.get("name");
         return temp;
+    }
+    public String preDefine(String s) {        //특정 symbol의 범주를 반환한다. (ex. a-> letter)
+        char c = s.charAt(0);
+        if(Letter.indexOf(c) != -1)
+            return "Letter";
+        else if(Digit_Exp_Z.indexOf(c) != -1)
+            return "Digit_Exp_Z";
+        else if(Digit.indexOf(c) != -1)
+            return "Digit";
+        else
+            return Character.toString(c);
     }
 }

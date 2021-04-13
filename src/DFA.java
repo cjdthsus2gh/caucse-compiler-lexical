@@ -12,12 +12,14 @@ public class DFA {
 
     public String getNextState(JSONObject currentState, String inputChar) {
         JSONObject nextState = (JSONObject)currentState.get(inputChar);
-        return nextState.toString();
+        return ((nextState) ? nextState.toString() : "false");
     }
 
-    public void dfa(String tok_name) {
+    public void dfa(String tok_name, String inputFile) {
+        String result;
+        
         JSONObject tok_states = (JSONObject)transTable.get(tok_name);
         JSONObject s_state = (JSONObject)tok_states.get("T0");
-        
+        result = getNextState(s_state, )
     }
 }

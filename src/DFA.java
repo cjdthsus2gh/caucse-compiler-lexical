@@ -49,14 +49,10 @@ public class DFA {
             JSONObject n_state = (JSONObject)this.table.get(n_input);
             if(n_state == null) {
                 this.stance = 2;
-                /*System.out.println("Don't have matching key");
-                System.out.println("stance moves to "+stance);*/
                 return false;
             }
             else {
                 this.c_state = n_state;
-                /*System.out.println("Matching key exists!!");
-                System.out.println(this.c_state);*/
                 return true;
         }
     }

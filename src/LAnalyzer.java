@@ -1,62 +1,88 @@
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 import java.io.*;
 import java.util.Scanner;
 
 public class LAnalyzer {
-    public static final int NUM_OF_TABLE = 22;
+    public static final int NUM_OF_TABLE = 23;
 
     public static void main(String[] args) {
-        String finalInput;
+
+        ParseTable pt = new ParseTable();
+        DFA[] dfa = new DFA[NUM_OF_TABLE];
 
         FileInput file = new FileInput();
-        ParseDFA dfa = new ParseDFA();
         Scanner scan = new Scanner(System.in);
-
-        String fileName= "./"+ scan.next();
-        String inputText= file.parseFile(fileName);
-        inputText = inputText + " ";
-
-        dfa.initJSON();
+        String fileName= "src/"+ scan.next();
+        String inputText= file.parseFile(fileName) + " ";
 
         String input;
-        String state = "T0";
         Boolean isFinish;
+
+        String finalOutput, finalToken = "temp";
 
         int startPos = 0;
         int[] checkToken = new int[NUM_OF_TABLE+1];
 
-//       while(true) {
-            for(int Torder=1 ; Torder<=NUM_OF_TABLE ; Torder++){
+
+        System.out.println(inputText);
+
+        for (int i = 0; i < NUM_OF_TABLE; i++) {
+            dfa[i] = new DFA(pt.splitTable(i));
+            dfa[i].resetDFA();
+        }
+
+        while(startPos < inputText.length()-2) {
+
+            for(int T=0;T<NUM_OF_TABLE;T++){
+                checkToken[T] = -1;                               //배열 초기화
                 for(int i=startPos;i<inputText.length();i++) {
+                    
 
-                    isFinish = Boolean.parseBoolean(dfa.getState(Torder, state, "fin")); 
-                    input = inputText.substring(i,i+1);      
-                    state = dfa.getState(Torder, state, input);
+                    isFinish = dfa[T].getNextState("fin"); 
+                    input = inputText.substring(i,i+1);
 
-                    System.out.println(input + ", " + state + ", " + i);
-
-                    if(state==null) { //해당 DFA가 끝났을때 (or 문장이 끝났을 때)
-                        state = "T0";
-                        if(isFinish) {                        //Token으로 성립했다면
-                            System.out.println("checkToken의 값 : "+ (i-startPos));
-                            checkToken[Torder] = i-startPos;  //Token의 길이 저장
-                            System.out.println(dfa.getName(Torder));
-                        }
-                        else {
-                            System.out.println("뭔가 이상함");
-                            checkToken[Torder] = 0;           //Token성립 안되면 0(false)
-                        }
+                    if((finalToken.equals("IDENTIFIER") || finalToken.equals("INTEGER")) &&
+                    input.equals("-") && T==10 && i==startPos)
+                        break;                              //"-"의 바로 앞 토큰이 Integer나 Identifier라면 "-"는 무조건 Operator로 취급.
+                       
+                    if(input.equals("-") && T==11 && i==startPos) {
+                        System.out.println("operator검사");
+                    }
+                    if(!dfa[T].getNextState(input)) {     //c_state에 차례대로 symbol을 삽입.
+                        dfa[T].resetDFA();                    //해당 DFA가 끝났을때 (or 문장이 끝났을 때)
+                        if(isFinish)                        //Token으로 성립했다면
+                            checkToken[T] = i-startPos;  //Token의 길이 저장
                         break;
                     }
+                    else {
+                    }
                 }
-                System.out.println(Torder+"번째 순회끝");
-                state = "T0";
+                //System.out.println(T+"번째 순회끝");
+                dfa[T].resetDFA();
             }
-            
-    //    }
-        for(int i=1;i<=NUM_OF_TABLE;i++)
-            System.out.println(checkToken[i]);
+            int max = 0;
+            int index = -1;
+            for(int i=0;i<NUM_OF_TABLE;i++) {      //제일 길게 파싱을 성공한 DFA 추출
+                if(max < checkToken[i]) {          //길이가 같다면 먼저 추출된 DFA(우선순위가 높은 DFA)가 추출됨.
+                    max = checkToken[i];
+                    index = i;
+                }
+            }
+            if(index == -1) {                      //어떤 DFA도 추출되지 않았다면 오류
+                System.out.println("Lexical Error Occured!!");
+                break;
+            }
+            if(!dfa[index].getName().equals("WHITESPACES")) {   //Whitespace 토큰은 저장/출력하지 않는다.
+                finalToken = dfa[index].getName();
+                finalOutput = inputText.substring(startPos,startPos+max);
+
+                if(finalToken.equals(dfa[8].getName()) || finalToken.equals(dfa[9].getName()) ||
+                   finalToken.equals(dfa[10].getName()) || finalToken.equals(dfa[11].getName()) || 
+                   finalToken.equals(dfa[13].getName()) || finalToken.equals(dfa[20].getName()) || finalToken.equals(dfa[21].getName()))
+                    System.out.println("< "+finalToken+","+finalOutput+" >");
+                else
+                    System.out.println("< "+finalToken+" >");    
+            }
+            startPos += max;
+        }
     }
 }

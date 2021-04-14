@@ -5,16 +5,18 @@ public class LAnalyzer {
 
     public static void main(String[] args) {
         String inputText;
+        String token = "";
         char ch_input;
         boolean end_check = true;
         int stance = 0;
+        String prev_token_name = "";
         JSONObject tok_table = null;
         DFA[] dfa = new DFA[23];
 
         FileInput fileParse = new FileInput();
         ParseTable pt = new ParseTable();
 
-        inputText = fileParse.parseFile("./input.txt") + "  ";
+        inputText = fileParse.parseFile("./input.txt");
         
         System.out.println(inputText);
 
@@ -28,6 +30,10 @@ public class LAnalyzer {
             ch_input = inputText.charAt(i);
             end_check = false;
             for (int j = 0; j < 23; j++) {
+                if (ch_input == '-'&& j == 10 && ("IDENTIFIER".equals(prev_token_name)||"INTEGER".equals(prev_token_name))) {
+                    dfa[10].setStance(3);
+                    continue;
+                }
                 stance = dfa[j].getStance();
                 if (stance == 2) {
                     dfa[j].setStance(3);
@@ -39,19 +45,30 @@ public class LAnalyzer {
                     end_check = (end_check|dfa[j].moveNextState(Character.toString(ch_input)));
                 }
             }
-            if (end_check)
+            if (end_check) {
+                token += ch_input;
                 continue;
+            }
             for (int j = 0; j < 23; j++) {
                 if (dfa[j].getStance() == 2 &&
                 dfa[j].moveNextState("fin") == true) {
-                    System.out.println("<" + dfa[j].getName() + ">");
+                    prev_token_name = dfa[j].getName();
+                    if (dfa[j].getName().equals("WHITESPACES"))
+                        break;
+                    System.out.println("<" + dfa[j].getName() + "," + token + ">");
                     break;
+                }
+                if (j == 22) {
+                    System.out.println("<Undefined," + ch_input + ">");
+                    prev_token_name = "";
+                    i += 1;
                 }
             }
             for (int j = 0; j < 23; j++) {
                 dfa[j].setStance(1);
                 dfa[j].initDFA();
             }
+            token = "";
             i -= 1;
         }
     }

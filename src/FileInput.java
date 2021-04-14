@@ -13,6 +13,7 @@ public class FileInput {
             Scanner scan = new Scanner(file);
             while(scan.hasNextLine()){
                 result.append(scan.nextLine());
+                result.append("\n");
             }
         }catch (FileNotFoundException e) {
             e.getStackTrace();

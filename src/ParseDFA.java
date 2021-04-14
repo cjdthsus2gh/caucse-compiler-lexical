@@ -15,7 +15,7 @@ public class ParseDFA {
 
     public void initJSON() {
         FileInput file = new FileInput();
-        String dfa = file.parseFile("src/transTable.json");
+        String dfa = file.parseFile("./transTable.json");
         try {
             table = (JSONObject) parser.parse(dfa);
         } catch (ParseException e) {

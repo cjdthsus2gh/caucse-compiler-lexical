@@ -14,7 +14,7 @@ public class LAnalyzer {
         ParseDFA dfa = new ParseDFA();
         Scanner scan = new Scanner(System.in);
 
-        String fileName= "src/"+ scan.next();
+        String fileName= "./"+ scan.next();
         String inputText= file.parseFile(fileName);
         inputText = inputText + " ";
 
@@ -27,7 +27,7 @@ public class LAnalyzer {
         int startPos = 0;
         int[] checkToken = new int[NUM_OF_TABLE+1];
 
-        while(true) {
+//       while(true) {
             for(int Torder=1 ; Torder<=NUM_OF_TABLE ; Torder++){
                 for(int i=startPos;i<inputText.length();i++) {
 
@@ -54,8 +54,8 @@ public class LAnalyzer {
                 System.out.println(Torder+"번째 순회끝");
                 state = "T0";
             }
-            break;   
-        }
+            
+    //    }
         for(int i=1;i<=NUM_OF_TABLE;i++)
             System.out.println(checkToken[i]);
     }

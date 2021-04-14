@@ -34,11 +34,18 @@ public class DFA {
     }
 
     public boolean moveNextState(String ch_input) {
-            String n_input = (String)this.c_state.get(ch_input);
-
-            if ("true".equals(n_input)) {
-                return true;
+        String n_input = "";
+        if ("fin".equals(ch_input)) {
+            n_input = (String)this.c_state.get(ch_input);
+            return ("true".equals(n_input) ? true : false);
+        }
+        for (Object k : this.c_state.keySet()) {
+            String key = k.toString();
+            if (key.indexOf(ch_input) > -1) {
+                n_input = (String)this.c_state.get(key);
+                break;
             }
+        }
             JSONObject n_state = (JSONObject)this.table.get(n_input);
             if(n_state == null) {
                 this.stance = 2;

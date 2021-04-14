@@ -10,12 +10,12 @@
         "T1" : {"fin":"true"}
     },
     "2" : {
-        "name" : "LBRACELET",
+        "name" : "LBRACE",
         "T0" : {"{":"T1"},
         "T1" : {"fin":"true"}
     },
     "3" : {
-        "name" : "RBRACELET",
+        "name" : "RBRACE",
         "T0" : {"}":"T1"},
         "T1" : {"fin":"true"}
     },

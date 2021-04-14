@@ -15,40 +15,45 @@ public class LAnalyzer {
         String inputText= file.parseFile(fileName) + " ";
 
         String input;
-        String state = "T0";
         Boolean isFinish;
 
-        String finalOutput, finalToken = null;
+        String finalOutput, finalToken = "temp";
 
         int startPos = 0;
         int[] checkToken = new int[NUM_OF_TABLE+1];
 
 
         System.out.println(inputText);
-        scan.next();
 
         for (int i = 0; i < NUM_OF_TABLE; i++) {
             dfa[i] = new DFA(pt.splitTable(i));
             dfa[i].resetDFA();
         }
-        while(startPos < inputText.length()-1) {
+
+        while(startPos < inputText.length()-2) {
+
             for(int T=0;T<NUM_OF_TABLE;T++){
+                checkToken[T] = -1;                               //배열 초기화
                 for(int i=startPos;i<inputText.length();i++) {
+                    
 
                     isFinish = dfa[T].getNextState("fin"); 
                     input = inputText.substring(i,i+1);
-                   
-                    if(input.equals("-") && T==10 &&       //"-"의 바로 앞 토큰이 Integer나 Identifier라면 "-"는 무조건 Operator로 취급.
-                        (finalToken.equals("IDENTIFIER") || finalToken.equals("INTEGER")))
-                              break;
 
+                    if((finalToken.equals("IDENTIFIER") || finalToken.equals("INTEGER")) &&
+                    input.equals("-") && T==10 && i==startPos)
+                        break;                              //"-"의 바로 앞 토큰이 Integer나 Identifier라면 "-"는 무조건 Operator로 취급.
+                       
+                    if(input.equals("-") && T==11 && i==startPos) {
+                        System.out.println("operator검사");
+                    }
                     if(!dfa[T].getNextState(input)) {     //c_state에 차례대로 symbol을 삽입.
                         dfa[T].resetDFA();                    //해당 DFA가 끝났을때 (or 문장이 끝났을 때)
                         if(isFinish)                        //Token으로 성립했다면
                             checkToken[T] = i-startPos;  //Token의 길이 저장
-                        else
-                            checkToken[T] = -1;           //Token성립 안되면 -1(false)
                         break;
+                    }
+                    else {
                     }
                 }
                 //System.out.println(T+"번째 순회끝");
@@ -66,10 +71,17 @@ public class LAnalyzer {
                 System.out.println("Lexical Error Occured!!");
                 break;
             }
-            finalToken = dfa[index].getName();
-            finalOutput = inputText.substring(startPos,startPos+max);
-            if(!finalToken.equals("WHITESPACES"))
-                System.out.println("< "+finalToken+","+finalOutput+" >");
+            if(!dfa[index].getName().equals("WHITESPACES")) {   //Whitespace 토큰은 저장/출력하지 않는다.
+                finalToken = dfa[index].getName();
+                finalOutput = inputText.substring(startPos,startPos+max);
+
+                if(finalToken.equals(dfa[8].getName()) || finalToken.equals(dfa[9].getName()) ||
+                   finalToken.equals(dfa[10].getName()) || finalToken.equals(dfa[11].getName()) || 
+                   finalToken.equals(dfa[13].getName()) || finalToken.equals(dfa[20].getName()) || finalToken.equals(dfa[21].getName()))
+                    System.out.println("< "+finalToken+","+finalOutput+" >");
+                else
+                    System.out.println("< "+finalToken+" >");    
+            }
             startPos += max;
         }
     }

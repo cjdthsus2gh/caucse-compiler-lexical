@@ -1,1 +1,2 @@
-class
+main;
+a = 10;

@@ -12,8 +12,9 @@ public class FileInput {
             //입력 스트림 생성
             Scanner scan = new Scanner(file);
             while(scan.hasNextLine()){
-                result.append(scan.nextLine());
+                result.append(scan.nextLine()+" ");
             }
+            scan.close();
         }catch (FileNotFoundException e) {
             e.getStackTrace();
         }

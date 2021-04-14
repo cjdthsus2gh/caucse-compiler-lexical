@@ -27,10 +27,14 @@ public class LAnalyzer {
         for (int i = 0; i < inputText.length(); i++) {
             ch_input = inputText.charAt(i);
             end_check = false;
+            /*System.out.println("Input value is "+inputText);*/
             for (int j = 0; j < 23; j++) {
+                /*System.out.println(dfa[j].getName());
+                System.out.println("stance : " + dfa[j].getStance());*/
                 stance = dfa[j].getStance();
                 if (stance == 2) {
                     dfa[j].setStance(3);
+                    /*System.out.println("moves to stance " + dfa[j].getStance());*/
                 }
                 else if (stance == 3) {
                     continue;
@@ -39,15 +43,22 @@ public class LAnalyzer {
                     end_check = (end_check|dfa[j].moveNextState(Character.toString(ch_input)));
                 }
             }
+            /*System.out.println(end_check);*/
             if (end_check)
                 continue;
+            System.out.println("<finding stay token>");
             for (int j = 0; j < 23; j++) {
+                /*System.out.println(dfa[j].getName());
+                System.out.println(dfa[j].getStance());
+                System.out.println(dfa[j].getC_sate());*/
                 if (dfa[j].getStance() == 2 &&
                 dfa[j].moveNextState("fin") == true) {
                     System.out.println("<" + dfa[j].getName() + ">");
                 }
                 dfa[j].setStance(1);
+                dfa[j].initDFA();
             }
+            i -= 1;
         }
     }
 }

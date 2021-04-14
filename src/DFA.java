@@ -26,7 +26,7 @@ public class DFA {
     }
 
     public JSONObject getC_sate() {
-        return c_state;
+        return this.c_state;
     }
 
     public void initDFA() {
@@ -34,14 +34,30 @@ public class DFA {
     }
 
     public boolean moveNextState(String ch_input) {
-            String n_input = (String)this.c_state.get(ch_input);
+            String n_input = "";
+            System.out.println(ch_input);
+            for (Object k : this.c_state.keySet()) {
+                String key = k.toString();
+                if (key.matches(ch_input)) {
+                    n_input = (String)this.c_state.get(key);
+                    break;
+                }
+            }
+            System.out.println(this.c_state.keySet());
+            if ("true".equals(n_input)) {
+                return true;
+            }
             JSONObject n_state = (JSONObject)this.table.get(n_input);
             if(n_state == null) {
                 this.stance = 2;
+                /*System.out.println("Don't have matching key");
+                System.out.println("stance moves to "+stance);*/
                 return false;
             }
             else {
                 this.c_state = n_state;
+                /*System.out.println("Matching key exists!!");
+                System.out.println(this.c_state);*/
                 return true;
         }
     }

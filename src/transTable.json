@@ -71,11 +71,11 @@
     },
     "10" : {
         "name" : "INTEGER",
-        "T0" : {"-":"T1", "Digit_Exp_Z":"T2", "0":"T3"},
-        "T1" : {"Digit_Exp_Z":"T3"},
-        "T2" : {"Digit":"T4", "fin":"true"},
+        "T0" : {"-":"T1", "123456789":"T2", "0":"T3"},
+        "T1" : {"123456789":"T3"},
+        "T2" : {"0123456789":"T4", "fin":"true"},
         "T3" : {"fin":"true"},
-        "T4" : {"Digit":"T4", "fin":"true"}
+        "T4" : {"0123456789":"T4", "fin":"true"}
     },
     "11" : {
         "name" : "OPERATOR",
@@ -90,10 +90,12 @@
     "13" : {
         "name" : "CHAR",
         "T0" : {"'":"T1"},
-        "T1" : {" ":"T2", "Letter":"T3", "Digit":"T4"},
+        "T1" : {" ":"T2", "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ":"T3",
+            "0123456789":"T4"},
         "T2" : {" ":"T2", "'":"T5"},
-        "T3" : {"Letter":"T3", "'":"T5"},
-        "T4" : {"Digit":"T4","'":"T5"}
+        "T3" : {"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ":"T3",
+            "'":"T5"},
+        "T4" : {"0123456789":"T4","'":"T5"}
     },
     "14" : {
         "name" : "BOOLEAN",
@@ -152,18 +154,26 @@
     "20" : {
         "name" : "STRING",
         "T0" : {"\"":"T1"},
-        "T1" : {" ":"T2", "Digit":"T3", "Letter":"T4"},
-        "T2" : {" ":"T2", "Digit":"T3", "Letter":"T4", "\"":"T5"},
-        "T3" : {" ":"T2", "Digit":"T3", "Letter":"T4", "\"":"T5"},
-        "T4" : {" ":"T2", "Digit":"T3", "Letter":"T4", "\"":"T5"},
+        "T1" : {" ":"T2", "0123456789":"T3",
+            "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ":"T4"},
+        "T2" : {" ":"T2", "0123456789":"T3",
+            "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ":"T4", "\"":"T5"},
+        "T3" : {" ":"T2", "0123456789":"T3",
+            "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ":"T4", "\"":"T5"},
+        "T4" : {" ":"T2", "0123456789":"T3",
+            "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ":"T4", "\"":"T5"},
         "T5" : {"fin":"true"}
     },
     "21" : {
         "name" : "IDENTIFIER",
-        "T0" : {"Letter":"T1", "_":"T2"},
-        "T1" : {"Letter":"T1", "_":"T2", "Digit":"T3", "fin":"true"},
-        "T2" : {"Letter":"T1", "_":"T2", "Digit":"T3", "fin":"true"},
-        "T3" : {"Letter":"T1", "_":"T2", "Digit":"T3", "fin":"true"}
+        "T0" : {"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ":"T1",
+            "_":"T2"},
+        "T1" : {"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ":"T1",
+            "_":"T2", "0123456789":"T3", "fin":"true"},
+        "T2" : {"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ":"T1",
+            "_":"T2", "0123456789":"T3", "fin":"true"},
+        "T3" : {"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ":"T1",
+            "_":"T2", "0123456789":"T3", "fin":"true"}
     },
     "22" : {
         "name" : "WHITESPACES",

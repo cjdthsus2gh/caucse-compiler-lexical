@@ -26,6 +26,7 @@ public class LAnalyzer {
 
         int startPos = 0;
         int[] checkToken = new int[NUM_OF_TABLE+1];
+    
 
         while(true) {
             for(int Torder=1 ; Torder<=NUM_OF_TABLE ; Torder++){
@@ -56,7 +57,7 @@ public class LAnalyzer {
             }
             break;   
         }
-        for(int i=1;i<=NUM_OF_TABLE;i++)
+        for(int i=1;i<=NUM_OF_TABLE ;i++)
             System.out.println(checkToken[i]);
     }
 }

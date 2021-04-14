@@ -34,16 +34,8 @@ public class DFA {
     }
 
     public boolean moveNextState(String ch_input) {
-            String n_input = "";
-            System.out.println(ch_input);
-            for (Object k : this.c_state.keySet()) {
-                String key = k.toString();
-                if (key.matches(ch_input)) {
-                    n_input = (String)this.c_state.get(key);
-                    break;
-                }
-            }
-            System.out.println(this.c_state.keySet());
+            String n_input = (String)this.c_state.get(ch_input);
+
             if ("true".equals(n_input)) {
                 return true;
             }

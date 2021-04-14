@@ -46,7 +46,6 @@ public class LAnalyzer {
             /*System.out.println(end_check);*/
             if (end_check)
                 continue;
-            System.out.println("<finding stay token>");
             for (int j = 0; j < 23; j++) {
                 /*System.out.println(dfa[j].getName());
                 System.out.println(dfa[j].getStance());

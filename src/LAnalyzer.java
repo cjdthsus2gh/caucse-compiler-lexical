@@ -2,17 +2,16 @@ import java.io.*;
 import java.util.Scanner;
 
 public class LAnalyzer {
-    public static final int NUM_OF_TABLE = 23;
+    public static final int NUM_OF_TOKEN = 23;
 
     public static void main(String[] args) {
 
         ParseTable pt = new ParseTable();
-        DFA[] dfa = new DFA[NUM_OF_TABLE];
+        DFA[] dfa = new DFA[NUM_OF_TOKEN];
 
-        FileInput file = new FileInput();
-        Scanner scan = new Scanner(System.in);
-        String fileName= "src/"+ scan.next();
-        String inputText= file.parseFile(fileName) + " ";
+        FileParser fileParser = new FileParser();
+        String inputText= "";
+        String outputText = "";
 
         String input;
         Boolean isFinish;
@@ -20,69 +19,68 @@ public class LAnalyzer {
         String finalOutput, finalToken = "temp";
 
         int startPos = 0;
-        int[] checkToken = new int[NUM_OF_TABLE+1];
+        int[] checkToken = new int[NUM_OF_TOKEN+1];
 
-
-        System.out.println(inputText);
-
-        for (int i = 0; i < NUM_OF_TABLE; i++) {
+        for (int i = 0; i < NUM_OF_TOKEN; i++) {
             dfa[i] = new DFA(pt.splitTable(i));
             dfa[i].resetDFA();
         }
 
-        while(startPos < inputText.length()-2) {
+        for (String fileName : args) {
+            outputText += ("File : " + fileName + "\n");
+            inputText = fileParser.parseInput(fileName) + " ";
+            outputText += ("Input : " + inputText + "\n");
+            startPos = 0;
+            while(startPos < inputText.length()-2) {
+                for(int T=0;T<NUM_OF_TOKEN;T++){
+                    checkToken[T] = -1;                               //배열 초기화
+                    for(int i=startPos;i<inputText.length();i++) {
+                        isFinish = dfa[T].getNextState("fin"); 
+                        input = inputText.substring(i,i+1);
 
-            for(int T=0;T<NUM_OF_TABLE;T++){
-                checkToken[T] = -1;                               //배열 초기화
-                for(int i=startPos;i<inputText.length();i++) {
-                    
-
-                    isFinish = dfa[T].getNextState("fin"); 
-                    input = inputText.substring(i,i+1);
-
-                    if((finalToken.equals("IDENTIFIER") || finalToken.equals("INTEGER")) &&
-                    input.equals("-") && T==10 && i==startPos)
-                        break;                              //"-"의 바로 앞 토큰이 Integer나 Identifier라면 "-"는 무조건 Operator로 취급.
-                       
-                    if(input.equals("-") && T==11 && i==startPos) {
-                        System.out.println("operator검사");
+                        if( input.equals("-") && T==10 && i==startPos && (finalToken.equals("IDENTIFIER") || finalToken.equals("INTEGER")))
+                            break;                              //"-"의 바로 앞 토큰이 Integer나 Identifier라면 "-"는 무조건 Operator로 취급.
+                        
+                        if(input.equals("-") && T==11 && i==startPos) {
+                        }
+                        if(!dfa[T].getNextState(input)) {     //c_state에 차례대로 symbol을 삽입.
+                            dfa[T].resetDFA();                    //해당 DFA가 끝났을때 (or 문장이 끝났을 때)
+                            if(isFinish)                        //Token으로 성립했다면
+                                checkToken[T] = i-startPos;  //Token의 길이 저장
+                            break;
+                        }
+                        else {
+                        }
                     }
-                    if(!dfa[T].getNextState(input)) {     //c_state에 차례대로 symbol을 삽입.
-                        dfa[T].resetDFA();                    //해당 DFA가 끝났을때 (or 문장이 끝났을 때)
-                        if(isFinish)                        //Token으로 성립했다면
-                            checkToken[T] = i-startPos;  //Token의 길이 저장
-                        break;
-                    }
-                    else {
+                    dfa[T].resetDFA();
+                }
+                int max = 0;
+                int index = -1;
+                for(int i=0;i<NUM_OF_TOKEN;i++) {      //제일 길게 파싱을 성공한 DFA 추출
+                    if(max < checkToken[i]) {          //길이가 같다면 먼저 추출된 DFA(우선순위가 높은 DFA)가 추출됨.
+                        max = checkToken[i];
+                        index = i;
                     }
                 }
-                //System.out.println(T+"번째 순회끝");
-                dfa[T].resetDFA();
-            }
-            int max = 0;
-            int index = -1;
-            for(int i=0;i<NUM_OF_TABLE;i++) {      //제일 길게 파싱을 성공한 DFA 추출
-                if(max < checkToken[i]) {          //길이가 같다면 먼저 추출된 DFA(우선순위가 높은 DFA)가 추출됨.
-                    max = checkToken[i];
-                    index = i;
+                if(index == -1) {                      //어떤 DFA도 추출되지 않았다면 오류
+                    outputText += ("Lexical Error Occured!!");
+                    break;
                 }
-            }
-            if(index == -1) {                      //어떤 DFA도 추출되지 않았다면 오류
-                System.out.println("Lexical Error Occured!!");
-                break;
-            }
-            if(!dfa[index].getName().equals("WHITESPACES")) {   //Whitespace 토큰은 저장/출력하지 않는다.
-                finalToken = dfa[index].getName();
-                finalOutput = inputText.substring(startPos,startPos+max);
+                if(!dfa[index].getName().equals("WHITESPACES")) {   //Whitespace 토큰은 저장/출력하지 않는다.
+                    finalToken = dfa[index].getName();
+                    finalOutput = inputText.substring(startPos,startPos+max);
 
-                if(finalToken.equals(dfa[8].getName()) || finalToken.equals(dfa[9].getName()) ||
-                   finalToken.equals(dfa[10].getName()) || finalToken.equals(dfa[11].getName()) || 
-                   finalToken.equals(dfa[13].getName()) || finalToken.equals(dfa[20].getName()) || finalToken.equals(dfa[21].getName()))
-                    System.out.println("< "+finalToken+","+finalOutput+" >");
-                else
-                    System.out.println("< "+finalToken+" >");    
+                    if(finalToken.equals(dfa[8].getName()) || finalToken.equals(dfa[9].getName()) ||
+                    finalToken.equals(dfa[10].getName()) || finalToken.equals(dfa[11].getName()) || 
+                    finalToken.equals(dfa[13].getName()) || finalToken.equals(dfa[20].getName()) || finalToken.equals(dfa[21].getName()))
+                        outputText += ("<"+finalToken+","+finalOutput+"> ");
+                    else
+                        outputText += ("<"+finalToken+"> ");    
+                }
+                startPos += max;
             }
-            startPos += max;
+            outputText += "\n";
         }
+        fileParser.parseOutput(outputText);
     }
 }

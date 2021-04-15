@@ -1,16 +1,15 @@
 import org.json.simple.JSONObject;
-import java.io.*;
 
 public class DFA {
     private String name;
-    private JSONObject table = null;
-    private JSONObject c_state = null;
+    private JSONObject table = null; //토큰 별 Transition Table 저장용 변수
+    private JSONObject c_state = null; //현재 state를 담고있는 변수
 
     DFA(JSONObject table) {
         this.table = table;
         this.name = (String)this.table.get("name");
     }
-    public void resetDFA() {
+    public void resetDFA() { //DFA의 시작 state로 이동
         this.c_state = (JSONObject)this.table.get("T0");
     }
     public String getName() {
@@ -34,14 +33,10 @@ public class DFA {
         }
         JSONObject n_state = (JSONObject)this.table.get(n_input);
         if(n_state == null) {
-            /*System.out.println("Don't have matching key");
-            System.out.println("stance moves to "+stance);*/
             return false;
         }
         else {
             this.c_state = n_state;
-            /*System.out.println("Matching key exists!!");
-            System.out.println(this.c_state);*/
             return true;
         }
     }

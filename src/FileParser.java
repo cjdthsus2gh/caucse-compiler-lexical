@@ -3,20 +3,6 @@ import java.util.Scanner;
 
 public class FileParser {
     public String parseInput(String fileName) {
-        /*StringBuilder result = new StringBuilder();
-        try{
-            //파일 객체 생성
-            File file = new File(fileName);
-            //입력 스트림 생성
-            Scanner scan = new Scanner(file);
-            while(scan.hasNextLine()){
-                result.append(scan.nextLine());
-            }
-            scan.close();
-            result.append("\n");
-        }catch (FileNotFoundException e) {
-            e.getStackTrace();
-        return result.toString();*/
         FileInputStream fs = null;
         try {
             // 바이트 단위로 파일읽기

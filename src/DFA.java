@@ -20,6 +20,7 @@ public class DFA {
     }
     public boolean getNextState(String ch_input) {
         String n_input = "";
+
         if ("fin".equals(ch_input)) {
             n_input = (String)this.c_state.get(ch_input);
             return ("true".equals(n_input) ? true : false);
@@ -36,6 +37,7 @@ public class DFA {
             return false;
         }
         else {
+            System.out.println("Name: "+ this.name + " Transition!! with " + ch_input);
             this.c_state = n_state;
             return true;
         }

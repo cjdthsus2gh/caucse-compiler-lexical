@@ -27,16 +27,24 @@ public class LAnalyzer {
         }
 
         for (String fileName : args) {
-            inputText = fileParser.parseInput(fileName) + " ";
+            inputText = fileParser.parseInput(fileName);
             outputText += ("Input : " + inputText + "\n");
             startPos = 0;
 
-            while(startPos < inputText.length()-2) {
+            System.out.println(inputText.length());
+
+            while(startPos < inputText.length()) {
+
                 for(int T=0;T<NUM_OF_TOKEN;T++){
                     checkToken[T] = -1;                               //배열 초기화
-                    for(int i=startPos;i<inputText.length();i++) {
-                        isFinish = dfa[T].getNextState("fin"); 
-                        input = inputText.substring(i,i+1);
+                    for(int i=startPos;i<=inputText.length();i++) {
+
+                        isFinish = dfa[T].getNextState("fin");
+                        if(i == inputText.length())
+                            input = "&";
+                        else                     
+                            input = inputText.substring(i,i+1);
+                        System.out.println(startPos);
 
                         if(input.equals("-") && T==10 && i==startPos && (finalToken.equals("IDENTIFIER") || finalToken.equals("INTEGER")))
                             break;                              //"-"의 바로 앞 토큰이 Integer나 Identifier라면 "-"는 무조건 Operator로 취급.
@@ -64,7 +72,7 @@ public class LAnalyzer {
                         index = i;
                     }
                 }
-                if(index == -1) {                      //어떤 DFA도 추출되지 않았다면 오류
+                if( index == -1) {                      //어떤 DFA도 추출되지 않았다면 오류
                     outputText += ("Lexical Error Occured!!");
                     break;
                 }

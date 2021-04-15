@@ -8,7 +8,8 @@ public class ParseTable {
     
     ParseTable() {
         try {
-            table = (JSONObject) parser.parse(new FileReader("/transTable.json"));
+            InputStream in = getClass().getResourceAsStream("/transTable.json");
+            table = (JSONObject) parser.parse(new InputStreamReader(in));
         } catch (Exception e) {
             System.out.println("변환에 실패");
             e.printStackTrace();

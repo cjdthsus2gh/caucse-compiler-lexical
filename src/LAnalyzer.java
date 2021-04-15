@@ -27,10 +27,10 @@ public class LAnalyzer {
         }
 
         for (String fileName : args) {
-            outputText += ("File : " + fileName + "\n");
             inputText = fileParser.parseInput(fileName) + " ";
             outputText += ("Input : " + inputText + "\n");
             startPos = 0;
+
             while(startPos < inputText.length()-2) {
                 for(int T=0;T<NUM_OF_TOKEN;T++){
                     checkToken[T] = -1;                               //배열 초기화
@@ -38,15 +38,17 @@ public class LAnalyzer {
                         isFinish = dfa[T].getNextState("fin"); 
                         input = inputText.substring(i,i+1);
 
-                        if( input.equals("-") && T==10 && i==startPos && (finalToken.equals("IDENTIFIER") || finalToken.equals("INTEGER")))
+                        if(input.equals("-") && T==10 && i==startPos && (finalToken.equals("IDENTIFIER") || finalToken.equals("INTEGER")))
                             break;                              //"-"의 바로 앞 토큰이 Integer나 Identifier라면 "-"는 무조건 Operator로 취급.
                         
                         if(input.equals("-") && T==11 && i==startPos) {
                         }
                         if(!dfa[T].getNextState(input)) {     //c_state에 차례대로 symbol을 삽입.
                             dfa[T].resetDFA();                    //해당 DFA가 끝났을때 (or 문장이 끝났을 때)
-                            if(isFinish)                        //Token으로 성립했다면
+                            if(isFinish) {
+                                // System.out.println(input+", "+i+", "+startPos);                        //Token으로 성립했다면
                                 checkToken[T] = i-startPos;  //Token의 길이 저장
+                            }
                             break;
                         }
                         else {
@@ -79,8 +81,7 @@ public class LAnalyzer {
                 }
                 startPos += max;
             }
-            outputText += "\n";
+            fileParser.parseOutput(fileName, outputText);
         }
-        fileParser.parseOutput(outputText);
     }
 }
